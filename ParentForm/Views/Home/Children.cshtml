@@ -1,0 +1,30 @@
+﻿@using ParentForm.Database
+@model IEnumerable<Parent>
+<div class="row">
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="col-md-2">Name</th>
+                <th class="col-md-2">Email</th>
+                <th class="col-md-2">Area</th>
+                <th class="col-md-2">Mobile</th>
+                <th class="col-md-2">Address</th>
+                <th class="col-md-2">Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model)
+            {
+                <tr>
+                    <td>@i.Name</td>
+                    <td>@i.Email</td>
+                    <td>@i.Address</td>
+                    <td>@i.MobileNUmber</td>
+                    <td>@i.Address</td>
+                    <td><a href="#">Edit</a></td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>

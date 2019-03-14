@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ParentsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Class">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Children" Relationship="ParentsModel.FK_Children_Class" FromRole="Class" ToRole="Child" />
+  </EntityType>
+  <EntityType Name="Parent">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="LandMark" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="MobileNUmber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Children" Relationship="ParentsModel.FK_Children_Parents" FromRole="Parent" ToRole="Child" />
+  </EntityType>
+  <EntityContainer Name="ParentsEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Classes" EntityType="Self.Class" />
+    <EntitySet Name="Parents" EntityType="Self.Parent" />
+    <EntitySet Name="Children" EntityType="ParentsModel.Child" />
+    <AssociationSet Name="FK_Children_Class" Association="ParentsModel.FK_Children_Class">
+      <End Role="Class" EntitySet="Classes" />
+      <End Role="Child" EntitySet="Children" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Children_Parents" Association="ParentsModel.FK_Children_Parents">
+      <End Role="Parent" EntitySet="Parents" />
+      <End Role="Child" EntitySet="Children" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Child">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ClassId" Type="Int32" />
+    <Property Name="Gender" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="School" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Age" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ParentId" Type="Int32" />
+    <NavigationProperty Name="Class" Relationship="ParentsModel.FK_Children_Class" FromRole="Child" ToRole="Class" />
+    <NavigationProperty Name="Parent" Relationship="ParentsModel.FK_Children_Parents" FromRole="Child" ToRole="Parent" />
+  </EntityType>
+  <Association Name="FK_Children_Class">
+    <End Type="ParentsModel.Class" Role="Class" Multiplicity="0..1" />
+    <End Type="ParentsModel.Child" Role="Child" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Class">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Child">
+        <PropertyRef Name="ClassId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Children_Parents">
+    <End Type="ParentsModel.Parent" Role="Parent" Multiplicity="0..1" />
+    <End Type="ParentsModel.Child" Role="Child" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Parent">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Child">
+        <PropertyRef Name="ParentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

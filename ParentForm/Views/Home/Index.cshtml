@@ -1,0 +1,179 @@
+﻿@using ParentForm.Models
+@model ParentModel
+    @{ 
+        IEnumerable<SelectListItem> Classess = ViewBag.classes;
+        IEnumerable<SelectListItem> gender = ViewBag.gender;
+    }
+        @using (Html.BeginForm("", "", FormMethod.Post, new { id = "prodForm", enctype = "multipart/form-data", @class = "form-horizontal" }))
+    {
+
+    <div class="form-group">
+        <label for="Name">Father Name:</label>
+        @Html.TextBoxFor(x => x.Name, new { @class = "form-control",id= "Name" })
+    </div>
+    <div class="form-group">
+        <label for="Name">Email:</label>
+        @Html.TextBoxFor(x => x.Email, new { @class = "form-control", id = "Email" })
+    </div>
+    <div class="form-group">
+        <label for="Name">Mobile NUmber</label>
+        @Html.TextBoxFor(x => x.MobileNUmber, new { @class = "form-control", id = "MobileNUmber" })
+    </div>
+    <div class="form-group">
+        <label for="Name">Address</label>
+        @Html.TextBoxFor(x => x.Address, new { @class = "form-control", id = "Address" })
+    </div>
+    <div class="form-group">
+        <label for="Name">Land Mark</label>
+        @Html.TextBoxFor(x => x.LandMark, new { @class = "form-control", id = "LandMark"})
+    </div>
+    <br />
+
+    <div>Children Area</div>
+    <br />
+    <div class="row">
+        <table class="table" id="parenttable">
+            <thead>
+                <tr class="row">
+                    <th class="col-md-2">Name</th>
+                    <th class="col-md-2">Class</th>
+                    <th class="col-md-2">Gender</th>
+                    <th class="col-md-2">School</th>
+                </tr>
+            </thead>
+            <tbody id="parentbody">
+@for (int i = 0; i < ViewBag.count; i++)
+{
+                    <tr class="row">
+                      
+                        <td class="col-md-2">@Html.TextBoxFor(x => Model.ChildrenList[i].Name, new { @class = "form-control" })</td>
+                        <td class="col-md-2">@Html.DropDownListFor(x => Model.ChildrenList[i].ClassId, Classess, new { @class = "form-control" })</td>
+                        <td class="col-md-2">@Html.DropDownListFor(x => Model.ChildrenList[i].Gender, gender, new { @class = "form-control" })</td>
+                        <td class="col-md-2">@Html.TextBoxFor(x => Model.ChildrenList[i].School, new { @class = "form-control" })</td>
+                        <td><a href="#" id="clone"><span class="glyphicon glyphicon-plus clone"></span></a></td>
+                        <td><a href="#" id="clone"><span class="glyphicon glyphicon-minus clone"></span></a></td>
+                        <td><a href="#" id="clone"><span class="glyphicon glyphicon-remove clone"></span></a></td>
+                   
+                    </tr>
+}
+
+            </tbody>
+        </table>
+    </div>
+    <br /><br />
+    
+    <input type="submit" value="Save" class="btn btn-success" />
+    }
+<button class="btn btn-success" id="bindloop">bindloop</button>
+<div id="hiddendiv"></div>
+<table hidden="hidden" style="display: none">
+    <tbody id="clone">
+        <tr class="row">
+            <td class="col-md-2">@Html.TextBoxFor(x => Model.ChildrenList[0].Name, new { @class = "form-control" })</td>
+            <td class="col-md-2">@Html.DropDownListFor(x => Model.ChildrenList[0].ClassId, Classess, new { @class = "form-control" })</td>
+            <td class="col-md-2">@Html.DropDownListFor(x => Model.ChildrenList[0].Gender, gender, new { @class = "form-control" })</td>
+            <td class="col-md-2">@Html.TextBoxFor(x => Model.ChildrenList[0].School, new { @class = "form-control" })</td>
+            <td><a href="#" id="clone"><span class="glyphicon glyphicon-plus clone"></span></a> </td>   
+        </tr>
+
+    </tbody>
+</table>
+<br /><br />
+@Html.Action("Children")
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script type="text/javascript">
+    var Child = new Array();
+    var Children = {
+        Name: "",
+        ClassId: "",
+        Gender: "",
+        School: ""
+    };
+    $(document).on("click", ".clone", function () {
+        var new_row = $("#clone tr").clone();
+        $("#parentbody").append(new_row);
+        //TableData();
+    });
+    $("#prodForm").submit(function (e) {
+         TableData();
+        var Parent = {
+            Name: $("#Name").val(),
+            Email: $("#Email").val(),
+            MobileNUmber: $("#MobileNUmber").val(),
+            Address: $("#Address").val(),
+            LandMark: $("#LandMark").val(),
+            Children: JSON.stringify(Child)
+        }
+        $.ajax({
+            url: "/Home/Save",
+            data: Parent,
+            success: function (data) {
+                alert("done");
+            },
+        });
+    });
+    function TableData() {
+        //alert($("#LandMark"));
+       
+        $("#parenttable tbody tr").each(function() {
+
+            Name = $(this).find("td:eq(0)").find("input").val();
+            ClassId = $(this).find("td:eq(1)").find("select").val();
+            Gender = $(this).find("td:eq(2)").find("select").val();
+            School = $(this).find("td:eq(3)").find("input").val();
+            Children.Name = Name;
+            Children.ClassId = ClassId;
+            Children.Gender = Gender;
+            Children.School = School;
+            Child.push(Children);
+            //alert(Children.Name);
+        });
+       // Child = Children;
+       // alert(Child[0].Name);
+    }
+
+    //var Children = {
+    //    Name: $(this).find("td:eq(0)").find("input").val(),
+    //    ClassId: $(this).find("td:eq(1)").find("input").val(),
+    //    Gender: $(this).find("td:eq(2)").find("input").val(),
+    //    School: $(this).find("td:eq(3)").find("input").val()
+    //};
+    //ParentModel.push(Children);
+    //Children = null;
+
+
+    //$("#Schedule-form").submit(function (event) {
+    //    var newrow = "";
+    //    var addrow = "";
+    //    $('.newrows').each(function (i) {
+    //        var startDate = $('.newrows').eq(i).find('input[type = "text"]').eq(0).val();
+    //        var endDate = $('.newrows').eq(i).find('input[type = "text"]').eq(1).val();
+    //        var Saturday = $('.newrows').eq(i).find('select').eq(0).val();
+    //        var Sunday = $('.newrows').eq(i).find('select').eq(1).val();
+    //        var Monday = $('.newrows').eq(i).find('select').eq(2).val();
+    //        var Tuesday = $('.newrows').eq(i).find('select').eq(3).val();
+    //        var Wednesday = $('.newrows').eq(i).find('select').eq(4).val();
+    //        var Thursday = $('.newrows').eq(i).find('select').eq(5).val();
+    //        var Friday = $('.newrows').eq(i).find('select').eq(6).val();
+    //        newrow = startDate + "," + endDate + "," + Saturday + "," + Sunday + "," + Monday + "," + Tuesday + "," + Wednesday + "," + Thursday + "," + Friday + "|";
+    //        addrow = addrow + newrow;
+    //    });
+    //    document.getElementById("hiddendiv").value = addrow;
+    //    addrow = "";
+    //});
+
+    $("#Schedule-form").submit(function (event) {
+        var newrow = "";
+        var addrow = "";
+        $('.newrows').each(function (i) {
+            var Name = $('.newrows').find("td:eq(0)").find("input").val();
+            var ClassId = $('.newrows').find("td:eq(0)").find("input").val();
+            var Gender = $('.newrows').find("td:eq(0)").find("input").val();
+            var School = $('.newrows').find("td:eq(0)").find("input").val();
+            newrow = startDate + "," + endDate + "," + Saturday + "," + Sunday + "," + Monday + "," + Tuesday + "," + Wednesday + "," + Thursday + "," + Friday + "|";
+            addrow = addrow + newrow;
+        });
+        document.getElementById("hiddendiv").value = addrow;
+        addrow = "";
+    });
+</script>
