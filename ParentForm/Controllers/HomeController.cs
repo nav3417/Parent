@@ -31,21 +31,17 @@ namespace ParentForm.Controllers
         public ActionResult Save(ParentModel obj)
         {
             var get1 = obj.Children.Split(',');
-            var ds = JsonConvert.DeserializeObject< List<Children>>(obj.Children);
-
-            string[] b = Request.Form.AllKeys;
-
-            //string[] list2 = obj.Children.Split('|');
-
-           // Children get = JsonConvert.DeserializeObject<Children>(list2[0]);
-            List<Children> list=(Session["children"] == null) ? new List<Children>() : (List<Children>)Session["children"];
-            string Id = Request.Form.Get(b[0]);
-            string data2= Request.Form["data"];
-            var all = JsonConvert.DeserializeObject<Children>(Id);
-            // string data3 = data4["hiddendiv"];
-            //db.Parents.Add(data);
-            //db.SaveChanges();
-            return RedirectToAction("Index");
+            var ds = JsonConvert.DeserializeObject<List<Child>>(obj.Children);
+            Parent p = new Parent();
+            p.Address = obj.Address;
+            p.Email = obj.Email;
+            p.LandMark = obj.LandMark;
+            p.Name = obj.Name;
+            p.Children = ds;
+           // List<Children> list=(Session["children"] == null) ? new List<Children>() : (List<Children>)Session["children"];
+            db.Parents.Add(p);
+            db.SaveChanges();
+            return Redirect("/Home/Index");
         }
         public ActionResult Children()
         {
